@@ -1,4 +1,4 @@
-const TOKEN_KEY = "llm-stack-starter:token";
+const TOKEN_KEY = "chat-template:token";
 
 export function saveToken(token: string): void {
   if (typeof window !== "undefined") {

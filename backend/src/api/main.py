@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="llm-stack-starter API",
+    title="ChatTemplate API",
     version="0.1.0",
     lifespan=lifespan,
 )

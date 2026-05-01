@@ -1,7 +1,7 @@
 [project]
 name = "api"
 version = "0.1.0"
-description = "FastAPI backend for llm-stack-starter"
+description = "FastAPI backend for ChatTemplate"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115",

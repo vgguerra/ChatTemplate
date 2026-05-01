@@ -9,6 +9,8 @@ Stuff I want to add when I get to it. Loosely ordered by what I'd reach for next
 - [ ] Refresh tokens
 - [ ] Rate limiting (slowapi)
 - [ ] Langfuse traces
+- [ ] Demo GIF or screenshot in the README
+- [ ] Architecture diagram (Mermaid) in the README
 
 ## Later
 
@@ -17,6 +19,7 @@ Stuff I want to add when I get to it. Loosely ordered by what I'd reach for next
 - [ ] pgvector for RAG
 - [ ] Playwright e2e tests
 - [ ] Deploy notes (Fly.io / Azure)
+- [ ] CONTRIBUTING.md and issue templates once the repo gets traction
 
 ## Considered, rejected
 
@@ -27,3 +30,5 @@ Stuff I want to add when I get to it. Loosely ordered by what I'd reach for next
 ## Done
 
 - Initial scaffold (auth, sessions, SSE chat, Docker, CI)
+- Initial Alembic migration (users, chat_sessions, chat_messages)
+- Renamed everything to ChatTemplate

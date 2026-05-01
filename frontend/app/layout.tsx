@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "llm-stack-starter",
-  description: "FastAPI + Next.js starter for LLM apps",
+  title: "ChatTemplate",
+  description: "FastAPI + Next.js starter for chat apps with streaming, auth and persistent sessions",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

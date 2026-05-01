@@ -1,8 +1,12 @@
-# llm-stack-starter
+# ChatTemplate
 
 A starter I use when I need to spin up a FastAPI + Next.js app that talks to an LLM. JWT auth, SSE-streamed chat, persistent sessions, Docker compose for local dev.
 
 Mostly built for myself, since I keep rebuilding the same stack. Sharing it in case it's useful to anyone else.
+
+## Use this as a template
+
+Click **Use this template** at the top of the repo on GitHub to spin up a new project with this layout. Then update the names in `backend/pyproject.toml`, `backend/src/api/main.py` and `frontend/app/layout.tsx` to match your project.
 
 ## Stack
 
