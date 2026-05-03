@@ -16,6 +16,7 @@ dependencies = [
     "python-multipart>=0.0.20",
     "httpx>=0.28",
     "openai>=1.55",
+    "anthropic>=0.40",
     "sse-starlette>=2.1",
 ]
 

@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o-mini"
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-sonnet-4-6"
+    anthropic_max_tokens: int = 1024
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.2"
 
