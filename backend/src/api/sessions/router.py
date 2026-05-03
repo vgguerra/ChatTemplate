@@ -14,9 +14,7 @@ async def list_sessions(user: CurrentUser, db: DBSession) -> list[SessionRead]:
 
 
 @router.post("/", response_model=SessionRead, status_code=status.HTTP_201_CREATED)
-async def create_session(
-    payload: SessionCreate, user: CurrentUser, db: DBSession
-) -> SessionRead:
+async def create_session(payload: SessionCreate, user: CurrentUser, db: DBSession) -> SessionRead:
     s = await service.create(db, user.id, payload.title)
     return SessionRead.model_validate(s)
 

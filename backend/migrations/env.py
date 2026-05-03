@@ -2,6 +2,7 @@
 
 Run with: `uv run alembic upgrade head`.
 """
+
 import asyncio
 from logging.config import fileConfig
 

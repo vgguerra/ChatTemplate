@@ -37,7 +37,10 @@ class MockProvider:
 
     async def stream(self, messages: list[dict[str, str]]) -> AsyncIterator[str]:
         last = messages[-1]["content"] if messages else ""
-        reply = f"(mock) You said: {last}. Set LLM_PROVIDER to openai/anthropic/ollama for real responses."
+        reply = (
+            f"(mock) You said: {last}. "
+            "Set LLM_PROVIDER to openai/anthropic/ollama for real responses."
+        )
         for tok in reply.split(" "):
             yield tok + " "
 
@@ -92,23 +95,23 @@ class OllamaProvider:
 
     async def stream(self, messages: list[dict[str, str]]) -> AsyncIterator[str]:
         payload = {"model": self.model, "messages": messages, "stream": True}
-        async with httpx.AsyncClient(timeout=httpx.Timeout(None, connect=10.0)) as client:
-            async with client.stream(
-                "POST", f"{self.base_url}/api/chat", json=payload
-            ) as response:
-                response.raise_for_status()
-                async for line in response.aiter_lines():
-                    if not line:
-                        continue
-                    try:
-                        chunk = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-                    delta = chunk.get("message", {}).get("content")
-                    if delta:
-                        yield delta
-                    if chunk.get("done"):
-                        break
+        async with (
+            httpx.AsyncClient(timeout=httpx.Timeout(None, connect=10.0)) as client,
+            client.stream("POST", f"{self.base_url}/api/chat", json=payload) as response,
+        ):
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if not line:
+                    continue
+                try:
+                    chunk = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                delta = chunk.get("message", {}).get("content")
+                if delta:
+                    yield delta
+                if chunk.get("done"):
+                    break
 
 
 def get_provider() -> LLMProvider:
