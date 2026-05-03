@@ -15,6 +15,9 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:3000"
 
+    rate_limit_auth: str = "10/minute"
+    rate_limit_chat: str = "30/minute"
+
     llm_provider: Literal["mock", "openai", "anthropic", "ollama"] = "mock"
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
