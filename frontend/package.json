@@ -10,17 +10,18 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "15.0.4",
+    "next": "^15.5.15",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
-    "eslint-config-next": "15.0.4",
+    "eslint-config-next": "^15.5.15",
     "lint-staged": "^16.0.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^4.0.0",
@@ -31,5 +32,5 @@
       "eslint --fix --max-warnings 0"
     ]
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
 }
