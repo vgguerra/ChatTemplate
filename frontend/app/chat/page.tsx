@@ -1,18 +1,20 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import ChatBox from "@/components/ChatBox";
-import { createSession, listSessions, type ChatSession } from "@/lib/api";
-import { getToken } from "@/lib/auth";
+import { createSession, listSessions, logout, type ChatSession } from "@/lib/api";
+import { getAccessToken, getRefreshToken } from "@/lib/auth";
 
 export default function ChatPage() {
+  const router = useRouter();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeId, setActiveId] = useState<number | null>(null);
   const [needsAuth, setNeedsAuth] = useState(false);
 
   useEffect(() => {
-    if (!getToken()) {
+    if (!getAccessToken() && !getRefreshToken()) {
       setNeedsAuth(true);
       return;
     }
@@ -30,6 +32,11 @@ export default function ChatPage() {
     setActiveId(s.id);
   };
 
+  const onLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
+
   if (needsAuth) {
     return (
       <main className="mx-auto max-w-md p-8">
@@ -40,14 +47,14 @@ export default function ChatPage() {
 
   return (
     <main className="grid h-screen grid-cols-[260px_1fr]">
-      <aside className="border-r border-neutral-200 p-4 dark:border-neutral-800">
+      <aside className="flex flex-col border-r border-neutral-200 p-4 dark:border-neutral-800">
         <button
           onClick={onNew}
           className="mb-4 w-full rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white dark:bg-white dark:text-neutral-900"
         >
           + New chat
         </button>
-        <ul className="space-y-1">
+        <ul className="flex-1 space-y-1 overflow-y-auto">
           {sessions.map((s) => (
             <li key={s.id}>
               <button
@@ -63,6 +70,12 @@ export default function ChatPage() {
             </li>
           ))}
         </ul>
+        <button
+          onClick={onLogout}
+          className="mt-4 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
+        >
+          Sign out
+        </button>
       </aside>
       <section className="flex flex-col">
         {activeId ? (

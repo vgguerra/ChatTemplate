@@ -2,8 +2,7 @@
 
 import { useCallback } from "react";
 
-import { apiBase } from "./api";
-import { getToken } from "./auth";
+import { authedFetch } from "./api";
 
 type Handlers = {
   onUserMessage?: (content: string) => void;
@@ -21,11 +20,10 @@ export function useChatStream(sessionId: number, handlers: Handlers) {
     async (message: string) => {
       handlers.onUserMessage?.(message);
       try {
-        const res = await fetch(`${apiBase}/chat/${sessionId}/stream`, {
+        const res = await authedFetch(`/chat/${sessionId}/stream`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken() ?? ""}`,
             Accept: "text/event-stream",
           },
           body: JSON.stringify({ message }),

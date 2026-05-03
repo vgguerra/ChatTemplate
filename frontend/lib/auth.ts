@@ -1,18 +1,26 @@
-const TOKEN_KEY = "chat-template:token";
+const ACCESS_KEY = "chat-template:access";
+const REFRESH_KEY = "chat-template:refresh";
 
-export function saveToken(token: string): void {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(TOKEN_KEY, token);
-  }
+export type TokenPair = { accessToken: string; refreshToken: string };
+
+export function saveTokens(pair: TokenPair): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(ACCESS_KEY, pair.accessToken);
+  localStorage.setItem(REFRESH_KEY, pair.refreshToken);
 }
 
-export function getToken(): string | null {
+export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(ACCESS_KEY);
 }
 
-export function clearToken(): void {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(TOKEN_KEY);
-  }
+export function getRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(REFRESH_KEY);
+}
+
+export function clearTokens(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(ACCESS_KEY);
+  localStorage.removeItem(REFRESH_KEY);
 }

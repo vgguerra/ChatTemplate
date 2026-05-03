@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { login, register } from "@/lib/api";
-import { saveToken } from "@/lib/auth";
+import { saveTokens } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,8 +22,8 @@ export default function LoginPage() {
       if (mode === "register") {
         await register(email, password);
       }
-      const token = await login(email, password);
-      saveToken(token);
+      const tokens = await login(email, password);
+      saveTokens(tokens);
       router.push("/chat");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unexpected error");
