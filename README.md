@@ -10,12 +10,33 @@ Click **Use this template** at the top of the repo on GitHub to spin up a new pr
 
 ## Stack
 
-- Backend: FastAPI · Pydantic · SQLAlchemy 2 async · Alembic · asyncpg
+- Backend: FastAPI · Pydantic · SQLAlchemy 2 async · Alembic · asyncpg · slowapi
 - Frontend: Next.js 15 · React 19 · TypeScript · Tailwind v4
 - Database: Postgres 16
-- LLM: OpenAI by default; provider is abstracted in `chat/llm.py`, easy to swap
-- Auth: JWT (HS256) + bcrypt
-- Tooling: uv · pnpm · Docker · GitHub Actions
+- LLM: OpenAI · Anthropic · Ollama · mock — all behind a single `chat/llm.py` provider interface
+- Auth: JWT access tokens + opaque refresh tokens (rotation) · bcrypt
+- Tooling: uv · pnpm · Docker · GitHub Actions · Husky
+
+## Architecture
+
+```mermaid
+flowchart LR
+    user(["User"]) --> web["Next.js<br/>(login · chat UI · SSE consumer)"]
+    web -->|"REST · JSON"| api
+    web -.->|"SSE: token / done"| api
+    subgraph backend["FastAPI"]
+        api["routers<br/>auth · sessions · chat"]
+        limiter["slowapi<br/>rate limiter"]
+        llm["llm.py<br/>provider interface"]
+        api --> limiter
+        api --> llm
+    end
+    api -->|"SQLAlchemy async"| db[("Postgres<br/>users · sessions · messages · refresh_tokens")]
+    llm --> openai["OpenAI"]
+    llm --> anthropic["Anthropic"]
+    llm --> ollama["Ollama (local)"]
+    llm --> mock["mock (dev)"]
+```
 
 ## Quickstart
 
@@ -23,7 +44,10 @@ Click **Use this template** at the top of the repo on GitHub to spin up a new pr
 
 ```bash
 cp .env.example .env
-# put OPENAI_API_KEY in .env (or leave LLM_PROVIDER=mock)
+# pick a provider: leave LLM_PROVIDER=mock for canned replies, or set
+#   LLM_PROVIDER=openai    + OPENAI_API_KEY
+#   LLM_PROVIDER=anthropic + ANTHROPIC_API_KEY
+#   LLM_PROVIDER=ollama    + a running Ollama on OLLAMA_BASE_URL
 docker compose up --build
 ```
 
@@ -49,13 +73,15 @@ pnpm dev
 ## What's in here
 
 - FastAPI app with health endpoint and lifespan
-- JWT auth: `/auth/register`, `/auth/login`, `/auth/me`
+- JWT auth with refresh-token rotation: `/auth/register`, `/auth/login`, `/auth/refresh`, `/auth/logout`, `/auth/me`
 - SSE chat endpoint: `/chat/{session_id}/stream`
 - Persistent sessions: `/sessions` CRUD
+- LLM providers: OpenAI · Anthropic · Ollama · mock — switch with `LLM_PROVIDER`
+- Per-IP rate limiting via slowapi (auth and chat endpoints)
 - Postgres schema via Alembic
-- Mock LLM provider for dev without API keys (`LLM_PROVIDER=mock`)
+- Frontend that auto-refreshes the access token on 401
 - docker-compose with db + api + web
-- CI (lint, format, test, build)
+- CI (lint, format, test, build) + husky hooks (lint-staged, conventional commits)
 
 ## Git hooks
 
