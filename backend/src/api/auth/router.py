@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from api.auth import service
-from api.auth.schemas import Token, UserCreate, UserRead
+from api.auth.schemas import RefreshRequest, TokenPair, UserCreate, UserRead
 from api.core.config import settings
 from api.core.deps import CurrentUser, DBSession
 from api.core.rate_limit import limiter
@@ -22,17 +22,37 @@ async def register(request: Request, payload: UserCreate, db: DBSession) -> User
     return UserRead.model_validate(user)
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=TokenPair)
 @limiter.limit(settings.rate_limit_auth)
 async def login(
     request: Request,
     form: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: DBSession,
-) -> Token:
+) -> TokenPair:
     user = await service.authenticate(db, form.username, form.password)
     if user is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    return Token(access_token=create_access_token(str(user.id)))
+    refresh = await service.issue_refresh_token(db, user.id)
+    return TokenPair(access_token=create_access_token(str(user.id)), refresh_token=refresh)
+
+
+@router.post("/refresh", response_model=TokenPair)
+@limiter.limit(settings.rate_limit_auth)
+async def refresh(request: Request, payload: RefreshRequest, db: DBSession) -> TokenPair:
+    row = await service.consume_refresh_token(db, payload.refresh_token)
+    if row is None:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    new_refresh = await service.issue_refresh_token(db, row.user_id)
+    return TokenPair(
+        access_token=create_access_token(str(row.user_id)),
+        refresh_token=new_refresh,
+    )
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(payload: RefreshRequest, db: DBSession) -> Response:
+    await service.revoke_refresh_token(db, payload.refresh_token)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/me", response_model=UserRead)

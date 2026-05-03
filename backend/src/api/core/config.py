@@ -11,7 +11,8 @@ class Settings(BaseSettings):
 
     jwt_secret: str = "change-me"
     jwt_algorithm: str = "HS256"
-    jwt_expire_minutes: int = 60
+    jwt_expire_minutes: int = 15
+    refresh_token_expire_days: int = 30
 
     cors_origins: str = "http://localhost:3000"
 

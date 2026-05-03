@@ -22,7 +22,7 @@ See [README.md](./README.md) and [TODO.md](./TODO.md).
 
 - `backend/src/api/main.py` — FastAPI app entry (CORS, lifespan, router includes)
 - `backend/src/api/core/` — config, db (async engine), security (JWT, bcrypt), deps
-- `backend/src/api/auth/` — register / login / me
+- `backend/src/api/auth/` — register / login / refresh / logout / me
 - `backend/src/api/chat/` — SSE streaming + LLM provider abstraction (`llm.py`)
 - `backend/src/api/sessions/` — chat session CRUD + message persistence
 - `backend/migrations/versions/` — Alembic migrations
