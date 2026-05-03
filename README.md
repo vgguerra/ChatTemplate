@@ -57,6 +57,16 @@ pnpm dev
 - docker-compose with db + api + web
 - CI (lint, format, test, build)
 
+## Git hooks
+
+Conventional commits are enforced via [.husky/](./.husky/). After cloning, activate them once:
+
+```bash
+git config core.hooksPath .husky
+```
+
+`pre-commit` runs `eslint` on staged frontend files (via `lint-staged`) and `ruff check`/`ruff format --check` on staged Python files. `commit-msg` validates the conventional-commit prefix (`feat:`, `fix:`, `docs:`…).
+
 ## TODO
 
 See [TODO.md](./TODO.md).

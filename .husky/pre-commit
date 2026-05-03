@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+# ── Frontend: lint only staged files ──
+staged_fe=$(git diff --cached --name-only --diff-filter=ACM -- 'frontend/*.{ts,tsx,js,jsx}')
+if [ -n "$staged_fe" ]; then
+  cd frontend || exit 1
+  pnpm exec lint-staged --concurrent false || exit 1
+  cd ..
+fi
+
+# ── Backend: ruff + syntax-check on staged .py files ──
+staged_py=$(git diff --cached --name-only --diff-filter=ACM -- 'backend/*.py' | sed 's|^backend/||')
+if [ -n "$staged_py" ]; then
+  cd backend || exit 1
+  for f in $staged_py; do
+    if [ -f "$f" ]; then
+      python3 -m py_compile "$f" || exit 1
+    fi
+  done
+  uv run ruff check $staged_py || exit 1
+  uv run ruff format --check $staged_py || exit 1
+  cd ..
+fi
