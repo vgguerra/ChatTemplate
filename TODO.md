@@ -4,13 +4,8 @@ Stuff I want to add when I get to it. Loosely ordered by what I'd reach for next
 
 ## Soon
 
-- [ ] Anthropic provider
-- [ ] Ollama provider for local dev
-- [ ] Refresh tokens
-- [ ] Rate limiting (slowapi)
 - [ ] Langfuse traces
 - [ ] Demo GIF or screenshot in the README
-- [ ] Architecture diagram (Mermaid) in the README
 
 ## Later
 
@@ -32,3 +27,8 @@ Stuff I want to add when I get to it. Loosely ordered by what I'd reach for next
 - Initial scaffold (auth, sessions, SSE chat, Docker, CI)
 - Initial Alembic migration (users, chat_sessions, chat_messages)
 - Renamed everything to ChatTemplate
+- Anthropic and Ollama providers
+- Refresh tokens (access/refresh pair, rotation, /logout)
+- Rate limiting via slowapi
+- Husky hooks (lint-staged + conventional commits)
+- Architecture diagram (Mermaid) in the README
